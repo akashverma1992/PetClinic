@@ -5,13 +5,11 @@ using System.Net;
 using System.Web.Mvc;
 
 namespace PetClinic.Controllers.PetClinic {
-    public class AppointmentsController : Controller
-    {
+    public class AppointmentsController : Controller {
         private PetClinicDBContext db = new PetClinicDBContext();
 
         // GET: Appointments
-        public ActionResult Index(string searchAppointment)
-        {
+        public ActionResult Index(string searchAppointment) {
             //return View(db.Appointments.ToList());
             var aptID = from id in db.Appointments select id;
             if (!string.IsNullOrEmpty(searchAppointment)) {
@@ -21,23 +19,22 @@ namespace PetClinic.Controllers.PetClinic {
         }
 
         // GET: Appointments/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
+        public ActionResult Details(int? id) {
+            if (id == null) {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Appointment appointment = db.Appointments.Find(id);
-            if (appointment == null)
-            {
+            if (appointment == null) {
                 return HttpNotFound();
             }
             return View(appointment);
         }
 
         // GET: Appointments/Create
-        public ActionResult Create()
-        {
+        public ActionResult Create() {
+            PetClinicDBContext db = new PetClinicDBContext();
+            ViewBag.Doctors = new SelectList(db.Doctors, "ID", "DoctorName");
+            ViewBag.Rooms = new SelectList(db.Doctors, "ID", "RoomNumber");
             return View();
         }
 
@@ -46,30 +43,27 @@ namespace PetClinic.Controllers.PetClinic {
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,ClientName,DoctorName,Date,RoomNumber")] Appointment appointment)
-        {
+        public ActionResult Create([Bind(Include = "ID,ClientName,DoctorName,Date,RoomNumber")] Appointment appointment) {
             if (ModelState.IsValid) {
                 // insert appointment check code for the same date
                 string aptno = this.createAppointmentID(appointment);
                 appointment.AppointmentID = aptno;
+                //appointment.DoctorName;
+
                 db.Appointments.Add(appointment);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-
             return View(appointment);
         }
 
         // GET: Appointments/Edit/5
-        public ActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
+        public ActionResult Edit(int? id) {
+            if (id == null) {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Appointment appointment = db.Appointments.Find(id);
-            if (appointment == null)
-            {
+            if (appointment == null) {
                 return HttpNotFound();
             }
             return View(appointment);
@@ -80,10 +74,8 @@ namespace PetClinic.Controllers.PetClinic {
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,ClientName,DoctorName,Date,RoomNumber")] Appointment appointment)
-        {
-            if (ModelState.IsValid)
-            {
+        public ActionResult Edit([Bind(Include = "ID,ClientName,DoctorName,Date,RoomNumber")] Appointment appointment) {
+            if (ModelState.IsValid) {
                 db.Entry(appointment).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -92,15 +84,12 @@ namespace PetClinic.Controllers.PetClinic {
         }
 
         // GET: Appointments/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
+        public ActionResult Delete(int? id) {
+            if (id == null) {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Appointment appointment = db.Appointments.Find(id);
-            if (appointment == null)
-            {
+            if (appointment == null) {
                 return HttpNotFound();
             }
             return View(appointment);
@@ -109,18 +98,15 @@ namespace PetClinic.Controllers.PetClinic {
         // POST: Appointments/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
+        public ActionResult DeleteConfirmed(int id) {
             Appointment appointment = db.Appointments.Find(id);
             db.Appointments.Remove(appointment);
             db.SaveChanges();
             return RedirectToAction("Index");
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
+        protected override void Dispose(bool disposing) {
+            if (disposing) {
                 db.Dispose();
             }
             base.Dispose(disposing);
@@ -134,7 +120,7 @@ namespace PetClinic.Controllers.PetClinic {
                     name[i] = appointment.ClientName[i];
                 }
             }
-            string aptno = new string(name) 
+            string aptno = new string(name)
                     + "-" + appointment.RoomNumber
                     + "-" + appointment.Date.Year
                     + "-" + appointment.Date.Month

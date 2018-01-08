@@ -39,6 +39,23 @@ namespace PetClinic.Migrations
                     AppointmentNumber = "AakashVerma-202-2018-02-11"
                 }
             );
+
+            context.Doctors.AddOrUpdate(i => i.ID,
+                new Doctor {
+                    DoctorName = "Dr.Abhinav",
+                    RoomNumber = 302,
+                    Speciality = "Eyes"
+                },
+                new Doctor {
+                    DoctorName = "Dr.Shivam",
+                    RoomNumber = 102,
+                    Speciality = "Skin"
+                },
+                new Doctor {
+                    DoctorName = "Dr.Keshav",
+                    RoomNumber = 202,
+                    Speciality = "Bones"
+                });
         }
     }
 }
