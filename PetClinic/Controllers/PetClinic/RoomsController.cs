@@ -1,13 +1,18 @@
-﻿using PetClinic.Models.PetClinicModels;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
+using System.Web;
 using System.Web.Mvc;
+using PetClinic.Models.PetClinicModels;
 
-namespace PetClinic.Controllers.PetClinic {
+namespace PetClinic.Controllers.PetClinic
+{
     public class RoomsController : Controller
     {
-        private PetClinicDBContext db = new PetClinicDBContext();
+        private PetClinicsDBContext db = new PetClinicsDBContext();
 
         // GET: Rooms
         public ActionResult Index()
@@ -41,7 +46,7 @@ namespace PetClinic.Controllers.PetClinic {
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,DoctorName,ClientName")] Room room)
+        public ActionResult Create([Bind(Include = "RoomID,RoomNumber")] Room room)
         {
             if (ModelState.IsValid)
             {
@@ -73,7 +78,7 @@ namespace PetClinic.Controllers.PetClinic {
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,DoctorName,ClientName")] Room room)
+        public ActionResult Edit([Bind(Include = "RoomID,RoomNumber")] Room room)
         {
             if (ModelState.IsValid)
             {

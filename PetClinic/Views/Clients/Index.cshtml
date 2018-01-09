@@ -14,15 +14,6 @@
         <th>
             @Html.DisplayNameFor(model => model.ClientName)
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Address)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Age)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.AppointmentNumber)
-        </th>
         <th></th>
     </tr>
 
@@ -32,18 +23,9 @@
             @Html.DisplayFor(modelItem => item.ClientName)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Address)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Age)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.AppointmentNumber)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
-            @Html.ActionLink("Details", "Details", new { id = item.ID }) |
-            @Html.ActionLink("Delete", "Delete", new { id = item.ID })
+            @Html.ActionLink("Edit", "Edit", new { id=item.ClientID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ClientID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ClientID })
         </td>
     </tr>
 }

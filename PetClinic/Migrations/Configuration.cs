@@ -1,60 +1,61 @@
-namespace PetClinic.Migrations
-{
+namespace PetClinic.Migrations {
+    using PetClinic.Models.PetClinicModels;
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
-    using PetClinic.Models.PetClinicModels;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<PetClinic.Models.PetClinicModels.PetClinicDBContext>
-    {
-        public Configuration()
-        {
-            AutomaticMigrationsEnabled = false;
-            ContextKey = "PetClinic.Models.PetClinicModels.PetClinicDBContext";
+    internal sealed class Configuration : DbMigrationsConfiguration<PetClinic.Models.PetClinicModels.PetClinicsDBContext> {
+        public Configuration() {
+            AutomaticMigrationsEnabled = true;
         }
 
-        protected override void Seed(PetClinic.Models.PetClinicModels.PetClinicDBContext context)
-        {
+        protected override void Seed(PetClinic.Models.PetClinicModels.PetClinicsDBContext context) {
             //  This method will be called after migrating to the latest version.
 
             //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
             //  to avoid creating duplicate seed data.
 
-            context.Appointments.AddOrUpdate(i => i.ID,
-                new Appointment {
-                    ClientName = "Aakash Verma",
-                    DoctorName = "Dr. Abhinav",
-                    Date = DateTime.Parse("2018-02-11"),
-                    RoomNumber = 202,
-                    AppointmentID = "AakashVerma-202-2018-02-11"
-                }
-            );
+            context.Rooms.AddOrUpdate(i => i.RoomID,
+                new Room {
+                    RoomID = 1,
+                    RoomNumber = 101
+                },
+                new Room {
+                    RoomID = 2,
+                    RoomNumber = 102
+                },
+                new Room {
+                    RoomID = 3,
+                    RoomNumber = 103
+                });
 
-            context.Clients.AddOrUpdate(i => i.ID,
+            context.Doctors.AddOrUpdate(i => i.DoctorID,
+                new Doctor {
+                    DoctorID = 110,
+                    DoctorName = "Dr.Abhinav"
+                },
+                new Doctor {
+                    DoctorID = 120,
+                    DoctorName = "Dr.Shivam"
+                },
+                new Doctor {
+                    DoctorID = 130,
+                    DoctorName = "Dr.Akshay"
+                });
+
+            context.Clients.AddOrUpdate<Client>(i => i.ClientID,
                 new Client {
-                    ClientName = "Aakash Verma",
-                    Address = "Delhi",
-                    Age = 25,
-                    AppointmentNumber = "AakashVerma-202-2018-02-11"
-                }
-            );
-
-            context.Doctors.AddOrUpdate(i => i.ID,
-                new Doctor {
-                    DoctorName = "Dr.Abhinav",
-                    RoomNumber = 302,
-                    Speciality = "Eyes"
+                    ClientID = 1,
+                    ClientName = "Aakash Verma"
                 },
-                new Doctor {
-                    DoctorName = "Dr.Shivam",
-                    RoomNumber = 102,
-                    Speciality = "Skin"
+                new Client {
+                    ClientID = 2,
+                    ClientName = "Shruti Bhalla"
                 },
-                new Doctor {
-                    DoctorName = "Dr.Keshav",
-                    RoomNumber = 202,
-                    Speciality = "Bones"
+                new Client {
+                    ClientID = 3,
+                    ClientName = "Ajay Biswas"
                 });
         }
     }

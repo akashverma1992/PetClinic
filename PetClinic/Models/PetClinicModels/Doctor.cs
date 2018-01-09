@@ -1,9 +1,10 @@
-﻿namespace PetClinic.Models.PetClinicModels {
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace PetClinic.Models.PetClinicModels {
     public class Doctor
     {
-        public int ID { get; set; }
+        [Key]
+        public int DoctorID { get; set; }
         public string DoctorName { get; set; }
-        public string Speciality { get; set; }
-        public int RoomNumber { get; set; }
     }
 }

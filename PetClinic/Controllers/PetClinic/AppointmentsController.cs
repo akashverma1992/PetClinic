@@ -1,40 +1,47 @@
-﻿using PetClinic.Models.PetClinicModels;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
+using System.Web;
 using System.Web.Mvc;
+using PetClinic.Models.PetClinicModels;
 
-namespace PetClinic.Controllers.PetClinic {
-    public class AppointmentsController : Controller {
-        private PetClinicDBContext db = new PetClinicDBContext();
+namespace PetClinic.Controllers.PetClinic
+{
+    public class AppointmentsController : Controller
+    {
+        private PetClinicsDBContext db = new PetClinicsDBContext();
 
         // GET: Appointments
-        public ActionResult Index(string searchAppointment) {
-            //return View(db.Appointments.ToList());
-            var aptID = from id in db.Appointments select id;
-            if (!string.IsNullOrEmpty(searchAppointment)) {
-                aptID = aptID.Where(i => i.AppointmentID.Contains(searchAppointment));
-            }
-            return View(aptID);
+        public ActionResult Index()
+        {
+            var appointments = db.Appointments.Include(a => a.Client).Include(a => a.Doctor).Include(a => a.Room);
+            return View(appointments.ToList());
         }
 
         // GET: Appointments/Details/5
-        public ActionResult Details(int? id) {
-            if (id == null) {
+        public ActionResult Details(int? id)
+        {
+            if (id == null)
+            {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Appointment appointment = db.Appointments.Find(id);
-            if (appointment == null) {
+            if (appointment == null)
+            {
                 return HttpNotFound();
             }
             return View(appointment);
         }
 
         // GET: Appointments/Create
-        public ActionResult Create() {
-            PetClinicDBContext db = new PetClinicDBContext();
-            ViewBag.Doctors = new SelectList(db.Doctors, "ID", "DoctorName");
-            ViewBag.Rooms = new SelectList(db.Doctors, "ID", "RoomNumber");
+        public ActionResult Create()
+        {
+            ViewBag.ClientID = new SelectList(db.Clients, "ClientID", "ClientName");
+            ViewBag.DoctorID = new SelectList(db.Doctors, "DoctorID", "DoctorName");
+            ViewBag.RoomID = new SelectList(db.Rooms, "RoomID", "RoomNumber");
             return View();
         }
 
@@ -43,29 +50,36 @@ namespace PetClinic.Controllers.PetClinic {
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,ClientName,DoctorName,Date,RoomNumber")] Appointment appointment) {
-            if (ModelState.IsValid) {
-                // insert appointment check code for the same date
-                string aptno = this.createAppointmentID(appointment);
-                appointment.AppointmentID = aptno;
-                //appointment.DoctorName;
-
+        public ActionResult Create([Bind(Include = "AppointmentID,Date,DoctorID,ClientID,RoomID")] Appointment appointment)
+        {
+            if (ModelState.IsValid)
+            {
                 db.Appointments.Add(appointment);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
+
+            ViewBag.ClientID = new SelectList(db.Clients, "ClientID", "ClientName", appointment.ClientID);
+            ViewBag.DoctorID = new SelectList(db.Doctors, "DoctorID", "DoctorName", appointment.DoctorID);
+            ViewBag.RoomID = new SelectList(db.Rooms, "RoomID", "RoomID", appointment.RoomID);
             return View(appointment);
         }
 
         // GET: Appointments/Edit/5
-        public ActionResult Edit(int? id) {
-            if (id == null) {
+        public ActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Appointment appointment = db.Appointments.Find(id);
-            if (appointment == null) {
+            if (appointment == null)
+            {
                 return HttpNotFound();
             }
+            ViewBag.ClientID = new SelectList(db.Clients, "ClientID", "ClientName", appointment.ClientID);
+            ViewBag.DoctorID = new SelectList(db.Doctors, "DoctorID", "DoctorName", appointment.DoctorID);
+            ViewBag.RoomID = new SelectList(db.Rooms, "RoomID", "RoomNumber", appointment.RoomID);
             return View(appointment);
         }
 
@@ -74,22 +88,30 @@ namespace PetClinic.Controllers.PetClinic {
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,ClientName,DoctorName,Date,RoomNumber")] Appointment appointment) {
-            if (ModelState.IsValid) {
+        public ActionResult Edit([Bind(Include = "AppointmentID,Date,DoctorID,ClientID,RoomID")] Appointment appointment)
+        {
+            if (ModelState.IsValid)
+            {
                 db.Entry(appointment).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
+            ViewBag.ClientID = new SelectList(db.Clients, "ClientID", "ClientName", appointment.ClientID);
+            ViewBag.DoctorID = new SelectList(db.Doctors, "DoctorID", "DoctorName", appointment.DoctorID);
+            ViewBag.RoomID = new SelectList(db.Rooms, "RoomID", "RoomNumber", appointment.RoomID);
             return View(appointment);
         }
 
         // GET: Appointments/Delete/5
-        public ActionResult Delete(int? id) {
-            if (id == null) {
+        public ActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Appointment appointment = db.Appointments.Find(id);
-            if (appointment == null) {
+            if (appointment == null)
+            {
                 return HttpNotFound();
             }
             return View(appointment);
@@ -98,34 +120,21 @@ namespace PetClinic.Controllers.PetClinic {
         // POST: Appointments/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id) {
+        public ActionResult DeleteConfirmed(int id)
+        {
             Appointment appointment = db.Appointments.Find(id);
             db.Appointments.Remove(appointment);
             db.SaveChanges();
             return RedirectToAction("Index");
         }
 
-        protected override void Dispose(bool disposing) {
-            if (disposing) {
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
                 db.Dispose();
             }
             base.Dispose(disposing);
-        }
-
-        private string createAppointmentID(Appointment appointment) {
-            int index = appointment.ClientName.IndexOf(" ");
-            char[] name = new char[appointment.ClientName.Length];
-            for (int i = 0; i < appointment.ClientName.Length; i++) {
-                if (appointment.ClientName[i] != appointment.ClientName[index]) {
-                    name[i] = appointment.ClientName[i];
-                }
-            }
-            string aptno = new string(name)
-                    + "-" + appointment.RoomNumber
-                    + "-" + appointment.Date.Year
-                    + "-" + appointment.Date.Month
-                    + "-" + appointment.Date.Day;
-            return aptno;
         }
     }
 }

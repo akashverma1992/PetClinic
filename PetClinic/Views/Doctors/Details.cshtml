@@ -18,25 +18,9 @@
             @Html.DisplayFor(model => model.DoctorName)
         </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Speciality)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Speciality)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.RoomNumber)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.RoomNumber)
-        </dd>
-
     </dl>
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Edit", "Edit", new { id = Model.DoctorID }) |
     @Html.ActionLink("Back to List", "Index")
 </p>
